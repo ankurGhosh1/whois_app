@@ -1,27 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WHOIS App</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
 
+<div class="container">
     <form method="POST" action='/search/'>
         {% csrf_token %}
-        {{form.as_p}}
-        <button type="submit">Submit</button>
+        {{form|crispy}}
+        <button type="submit" class='btn btn-outline-success'>Submit</button>
     </form>
 
-    <div class="container">
-        <ul>
-            {% for search in search %}
-            <li>{{search.searchdomain}}</li>
-            <li>{{search.date}}</li>
-            {% endfor %}
-        </ul>
+    {% for search in search %}
+    <div class="card">
+        <div class="card-header bg-success">
+            Address: {{search.city}}, {{search.state}}, {{search.zipcode}}, {{search.country}}
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Domain: {{search.searchdomain}}</h5>
+          <p class="card-text">The creation date is {{search.creation_date}} and the domain Expires on {{search.expiration_date}}</p>
+          <h6 class="text-muted float-right">Organisation: {{search.org}}</h6>
+        </div>
+        <div class="card-footer text-muted">
+            Searched On: {{search.date}}
+        </div>
     </div>
+    {% endfor %}
 
-</body>
-</html>
+</div>
+
+{% endblock %}

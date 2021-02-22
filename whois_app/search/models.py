@@ -9,5 +9,15 @@ class User(AbstractUser):
 
 class Search(models.Model):
     searchdomain = models.CharField(max_length=50)
-    date = models.DateField(auto_now_add=True)
+    creation_date = models.DateField(null=True)
+    expiration_date = models.DateField(null=True)
+    org = models.CharField(max_length=80, null=True)
+    date = models.DateField(auto_now_add=True, null=True)
+    city = models.CharField(max_length=30, null=True)
+    state = models.CharField(max_length=30, null=True)
+    zipcode = models.IntegerField(null=True)
+    country = models.CharField(max_length=30, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.searchdomain

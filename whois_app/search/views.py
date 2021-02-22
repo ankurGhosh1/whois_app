@@ -20,30 +20,30 @@ class PreviousSearchView(View):
     def post(self, request):
         if request.method == 'POST':
             searchdomain = request.POST['searchdomain']
-            domain = whois.whois(searchdomain) 
-            date = datetime.datetime.now()
+            domain = whois.whois(searchdomain)
             domain_name = domain.domain_name
-            creation_date = domain.creation_date
-            expiration_date = domain.expiration_date
+            print(domain)
+            creation_date = domain.creation_date[0]
+            expiration_date = domain.expiration_date[0]
             org = domain.org
-            date = domain.date
+            date = datetime.datetime.now()
             city = domain.city
             state = domain.state
             zipcode = domain.zipcode
             country = domain.country
+            print(creation_date)
             search = Search(
                 searchdomain = domain_name,
-                creation_date = domain.creation_date,
-                expiration_date = domain.expiration_date,
-                org = domain.org,
-                city = domain.city,
-                state = domain.state,
-                zipcode = domain.zipcode,
-                country = domain.country,
-                date = date,
-                user = User.objects.get(id = request.user.id)
+                org = org,
+                city = city,
+                state = state,
+                zipcode = zipcode,
+                country = country,
+                user = User.objects.get(id = request.user.id),
+                creation_date = creation_date,
+                expiration_date = expiration_date,
+                date = date
             )
-            print(search)
             search.save()
         return redirect('/')
 

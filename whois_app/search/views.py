@@ -5,33 +5,37 @@ from django.views.generic import View
 
 from .models import User, Search
 from .forms import SearchForm, UserForm
+from .mixins import LoginMixin
 
 import whois
 # Create your views here.
 
-class HomePageView(View):
+class HomePageView(LoginMixin, View):
     def get(self, request):
         form = SearchForm
         search = Search.objects.filter(user = request.user.id)
         return render(request, 'home.html', {'form': form, 'search': search})
 
 
-class PreviousSearchView(View):
+class PreviousSearchView(LoginMixin, View):
     def post(self, request):
         if request.method == 'POST':
             searchdomain = request.POST['searchdomain']
             domain = whois.whois(searchdomain)
             domain_name = domain.domain_name
             print(domain)
-            creation_date = domain.creation_date[0]
-            expiration_date = domain.expiration_date[0]
+            try:
+                creation_date = domain.creation_date[0]
+                expiration_date = domain.expiration_date[0]
+            except Exception:
+                creation_date = domain.creation_date
+                expiration_date = domain.expiration_date
             org = domain.org
             date = datetime.datetime.now()
             city = domain.city
             state = domain.state
             zipcode = domain.zipcode
             country = domain.country
-            print(creation_date)
             search = Search(
                 searchdomain = domain_name,
                 org = org,
@@ -69,8 +73,10 @@ class SignupView(View):
             user.save()
             return redirect('/login')
 
-    # template_name = "registration/signup.html"
-    # form_class = UserForm
 
-    # def get_success_url(self):
-    #     return reverse("search:login")
+class DeleteView(LoginMixin, View):
+    def get(self, request, pk):
+        pk = self.kwargs.get('pk')
+        domain = Search.objects.filter(id=pk)
+        domain.delete()
+        return redirect('/')

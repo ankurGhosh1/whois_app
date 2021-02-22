@@ -5,3 +5,22 @@ a{
 button{
     margin: 10px 0px;
 }
+
+.delete{
+    position: absolute;
+    top: 50%;
+    right: 0;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    padding: 20px;
+    display: flex;
+    text-align: right;
+}
+
+.details{
+    margin: 10px 0px;
+}
+
+.username{
+   float: right;
+}

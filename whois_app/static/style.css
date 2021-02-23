@@ -22,7 +22,10 @@ button{
 }
 
 .username{
-   float: right;
+    position: absolute;
+    right: 0;
+    top: 50;
+    padding: 10px;
 }
 
 .buylink{

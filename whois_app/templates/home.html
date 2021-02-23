@@ -12,13 +12,15 @@
     {% for search in search %}
     <div class="card details">
         <div class="card-header bg-success">
-            Address: {{search.city}}, {{search.state}}, {{search.zipcode}}, {{search.country}}
+            Address: {{search.city}}, {{search.state}}, {{search.country}}
         </div>
         
         <div class="card-body">
             <h5 class="card-title">Domain: {{search.searchdomain}}</h5>
+            <h5 class="buylink">You may Search similar domains here: <a href="https://in.godaddy.com/domainsearch/find?checkAvail=1&domainToCheck={{search.searchdomain}}" target="_blank">Buy or Surf</a></h5>
             <p class="card-text">The creation date is {{search.creation_date}} and the domain Expires on {{search.expiration_date}}</p>
             <h6 class="text-muted float-right">Organisation: {{search.org}}</h6>
+            <h6 class="text-muted float-right">Availability: {{search.availability}}</h6>
             <div class="float-right">
 
                 <a href='/delete/{{search.id}}' class="delete">

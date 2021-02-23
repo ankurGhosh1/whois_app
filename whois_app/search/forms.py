@@ -5,7 +5,7 @@ class SearchForm(forms.ModelForm):
     class Meta:
         model = Search
         fields = '__all__'
-        exclude = ('date', 'user', 'city', 'state', 'country', 'zipcode', 'expiration_date', 'creation_date', 'org')
+        exclude = ('date', 'user', 'city', 'state', 'country', 'zipcode', 'expiration_date', 'creation_date', 'org', 'availability')
 
 
 class UserForm(forms.ModelForm):

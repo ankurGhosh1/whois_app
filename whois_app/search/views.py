@@ -1,5 +1,6 @@
 import datetime
 import subprocess
+import requests
 from django.shortcuts import render, redirect
 from django.views.generic import View
 
@@ -20,29 +21,33 @@ class HomePageView(LoginMixin, View):
 class PreviousSearchView(LoginMixin, View):
     def post(self, request):
         if request.method == 'POST':
-            searchdomain = request.POST['searchdomain']
+            searchdomain = request.POST['searchdomain'] # domain name
+
+            # Api Response
+            response = requests.get('https://www.whoisxmlapi.com/whoisserver/WhoisService?apiKey=at_COT8DMZsnQWZUYRQ0K9DWwazlMY7G&domainName=' + searchdomain + '&outputFormat=JSON').json()
+
+            availability = requests.get('https://domain-availability.whoisxmlapi.com/api/v1?apiKey=at_COT8DMZsnQWZUYRQ0K9DWwazlMY7G&domainName=' + searchdomain + '&credits=DA').json()
+
+            # Parsing it through whois Package
             domain = whois.whois(searchdomain)
-            domain_name = domain.domain_name
-            print(domain)
-            try:
-                creation_date = domain.creation_date[0]
-                expiration_date = domain.expiration_date[0]
-            except Exception:
-                creation_date = domain.creation_date
-                expiration_date = domain.expiration_date
+            domain_name = domain.domain_name[1]
+            # print(domain)
+
+            availability = availability['DomainInfo']['domainAvailability']
+            creation_date = response['WhoisRecord']['registryData']['createdDate']
+            expiration_date = response['WhoisRecord']['registryData']['expiresDate']
             org = domain.org
             date = datetime.datetime.now()
             city = domain.city
             state = domain.state
-            zipcode = domain.zipcode
             country = domain.country
             search = Search(
                 searchdomain = domain_name,
                 org = org,
                 city = city,
                 state = state,
-                zipcode = zipcode,
                 country = country,
+                availability = availability,
                 user = User.objects.get(id = request.user.id),
                 creation_date = creation_date,
                 expiration_date = expiration_date,

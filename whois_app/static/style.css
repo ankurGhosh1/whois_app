@@ -24,3 +24,7 @@ button{
 .username{
    float: right;
 }
+
+.buylink{
+    font-size: 12px;
+}

@@ -14,7 +14,6 @@ class Search(models.Model):
     availability = models.CharField(max_length=12, null=True)
     org = models.CharField(max_length=80, null=True)
     date = models.DateField(auto_now_add=True, null=True)
-    city = models.CharField(max_length=30, null=True)
     state = models.CharField(max_length=30, null=True)
     country = models.CharField(max_length=30, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

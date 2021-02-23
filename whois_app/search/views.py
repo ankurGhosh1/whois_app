@@ -40,13 +40,11 @@ class PreviousSearchView(LoginMixin, View):
                 expiration_date = datetime.datetime.now()
                 org = 'Not Created'
                 date = datetime.datetime.now()
-                city = 'Not Created'
                 state = 'Not Created'
                 country = 'Not Created'
                 search = Search(
                     searchdomain = domain_name,
                     org = org,
-                    city = city,
                     state = state,
                     country = country,
                     availability = availabe,
@@ -62,13 +60,11 @@ class PreviousSearchView(LoginMixin, View):
                 expiration_date = response['WhoisRecord']['registryData']['expiresDate']
                 org = response['WhoisRecord']['registrant']['organization']
                 date = datetime.datetime.now()
-                city = response['WhoisRecord']['registrant']['city']
                 state = response['WhoisRecord']['registrant']['state']
                 country = response['WhoisRecord']['registrant']['country']
                 search = Search(
                     searchdomain = domain_name,
                     org = org,
-                    city = city,
                     state = state,
                     country = country,
                     availability = availabe,
@@ -109,3 +105,15 @@ class DeleteView(LoginMixin, View):
         domain = Search.objects.filter(id=pk)
         domain.delete()
         return redirect('/')
+
+class ProfileView(LoginMixin, View):
+    def get(self, request):
+        user = User.objects.filter(id=request.user.id).values()
+        search = Search.objects.filter(user = request.user.id).values()
+        print(user)
+        print(search)
+        context = {
+            'users': user,
+            'search': search
+        }
+        return render(request, 'profile.html', context)

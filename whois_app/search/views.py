@@ -22,38 +22,62 @@ class PreviousSearchView(LoginMixin, View):
     def post(self, request):
         if request.method == 'POST':
             searchdomain = request.POST['searchdomain'] # domain name
+            
+            # # Parsing it through whois Package
+
+            # domain = whois.whois(searchdomain)
 
             # Api Response
             response = requests.get('https://www.whoisxmlapi.com/whoisserver/WhoisService?apiKey=at_COT8DMZsnQWZUYRQ0K9DWwazlMY7G&domainName=' + searchdomain + '&outputFormat=JSON').json()
 
             availability = requests.get('https://domain-availability.whoisxmlapi.com/api/v1?apiKey=at_COT8DMZsnQWZUYRQ0K9DWwazlMY7G&domainName=' + searchdomain + '&credits=DA').json()
 
-            # Parsing it through whois Package
-            domain = whois.whois(searchdomain)
-            domain_name = domain.domain_name[1]
-            # print(domain)
 
-            availability = availability['DomainInfo']['domainAvailability']
-            creation_date = response['WhoisRecord']['registryData']['createdDate']
-            expiration_date = response['WhoisRecord']['registryData']['expiresDate']
-            org = domain.org
-            date = datetime.datetime.now()
-            city = domain.city
-            state = domain.state
-            country = domain.country
-            search = Search(
-                searchdomain = domain_name,
-                org = org,
-                city = city,
-                state = state,
-                country = country,
-                availability = availability,
-                user = User.objects.get(id = request.user.id),
-                creation_date = creation_date,
-                expiration_date = expiration_date,
-                date = date
-            )
-            search.save()
+            availabe = availability['DomainInfo']['domainAvailability']
+            if availabe == "AVAILABLE":
+                domain_name = response['WhoisRecord']['domainName']
+                creation_date = datetime.datetime.now()
+                expiration_date = datetime.datetime.now()
+                org = 'Not Created'
+                date = datetime.datetime.now()
+                city = 'Not Created'
+                state = 'Not Created'
+                country = 'Not Created'
+                search = Search(
+                    searchdomain = domain_name,
+                    org = org,
+                    city = city,
+                    state = state,
+                    country = country,
+                    availability = availabe,
+                    user = User.objects.get(id = request.user.id),
+                    creation_date = creation_date,
+                    expiration_date = expiration_date,
+                    date = date
+                )
+                search.save()
+            else:
+                domain_name = response['WhoisRecord']['domainName']
+                creation_date = response['WhoisRecord']['registryData']['createdDate']
+                expiration_date = response['WhoisRecord']['registryData']['expiresDate']
+                org = response['WhoisRecord']['registrant']['organization']
+                date = datetime.datetime.now()
+                city = response['WhoisRecord']['registrant']['city']
+                state = response['WhoisRecord']['registrant']['state']
+                country = response['WhoisRecord']['registrant']['country']
+                search = Search(
+                    searchdomain = domain_name,
+                    org = org,
+                    city = city,
+                    state = state,
+                    country = country,
+                    availability = availabe,
+                    user = User.objects.get(id = request.user.id),
+                    creation_date = creation_date,
+                    expiration_date = expiration_date,
+                    date = date
+                )
+                search.save()
         return redirect('/')
 
 class SignupView(View):

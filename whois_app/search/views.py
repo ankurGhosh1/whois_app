@@ -109,3 +109,15 @@ class DeleteView(LoginMixin, View):
         domain = Search.objects.filter(id=pk)
         domain.delete()
         return redirect('/')
+
+class ProfileView(LoginMixin, View):
+    def get(self, request):
+        user = User.objects.filter(id=request.user.id).values()
+        search = Search.objects.filter(user = request.user.id).values()
+        print(user)
+        print(search)
+        context = {
+            'users': user,
+            'search': search
+        }
+        return render(request, 'profile.html', context)
